@@ -18,6 +18,7 @@ while True:
     print(seed_words)
    
    # data = ref.get()
-    ref.update({'seeds_phrase': seed_words})
+    ref.push({'seeds_phrase': seed_words})
     with open('data.txt', 'a') as file:
         file.write('\n' + str(seed_words))
+	

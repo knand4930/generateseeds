@@ -6,12 +6,14 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import requests
+import json
 
+API_KEY = "DFRBQVTNSMYCPXRDDCN5UTRWKGK89IPX6I"
 
 cred = credentials.Certificate("cryptoseeds-daef1-firebase-adminsdk-pz1q3-980d6ab096.json")
 firebase_admin.initialize_app(cred, {'databaseURL':'https://cryptoseeds-daef1-default-rtdb.firebaseio.com/'})
-ref = db.reference('py/')
-API_KEY = "DFRBQVTNSMYCPXRDDCN5UTRWKGK89IPX6I"
+ref = db.reference('zeroblance/')  
+refer = db.reference('balance/')
 
 while True:
     random_bytes = os.urandom(16)
@@ -19,8 +21,6 @@ while True:
     seed_words = mnemo.to_mnemonic(random_bytes)
     print(seed_words)
    
-   # data = ref.get()
-    ref.push({'seeds_phrase': seed_words})
     with open('data.txt', 'a') as file:
         file.write('\n' + str(seed_words))
 	
@@ -39,18 +39,20 @@ while True:
                     "address": acct.address,
                     "seeds" : seed_words,
                 }
-                with open('balance.txt', 'a') as file:
-                    file.write('\n' + str(variable))
+
+                json_refer = json.dumps(variable)            
+                refer.push({"data":json_refer})
+
             else:
-                acc = {
+                values = {
                     "results": data['result'],
                     "address": acct.address,
                     "seeds": seed_words,
                 }
-                ref.push({'seeds_phrase': acc})
 
-                with open('metamasktreal.txt', 'a') as file:
-                    file.write('\n' + str(acc))
+                json_string = json.dumps(values)                              
+                ref.push({'data': json_string})
+
 
     except Exception as E:
         print(E)
